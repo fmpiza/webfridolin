@@ -27,6 +27,99 @@
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
 
+	  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f7fb;
+    }
+
+    .chat-button {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 50%;
+      background: #2563eb;
+      color: white;
+      font-size: 25px;
+      cursor: pointer;
+      box-shadow: 0 5px 20px rgba(0,0,0,.2);
+    }
+
+    .chat-box {
+      display: none;
+      position: fixed;
+      right: 25px;
+      bottom: 95px;
+      width: 360px;
+      height: 520px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.2);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: #2563eb;
+      color: white;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .messages {
+      height: 395px;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 12px;
+      padding: 10px 13px;
+      border-radius: 12px;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    .user {
+      margin-left: auto;
+      background: #2563eb;
+      color: white;
+    }
+
+    .bot {
+      background: #eef2f7;
+      color: #111827;
+    }
+
+    .input-area {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      outline: none;
+    }
+
+    .input-area button {
+      width: 70px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+
     <!-- =======================================================
   * Template Name: iPortfolio - v3.7.0
   * Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
@@ -1019,8 +1112,99 @@ Its link to access is
     </footer>
     <!-- End  Footer -->
 
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+   <button class="chat-button" onclick="toggleChat()">💬</button>
 
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">
+     Fridolin's Technology Company AI Assistant
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="message bot">
+        Hello! 👋 Welcome to Fridolin's Technology. How can I help you today?
+      </div>
+    </div>
+
+    <div class="input-area">
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="Type your message..."
+        onkeydown="if(event.key === 'Enter') sendMessage()"
+      />
+
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function toggleChat() {
+      const chat = document.getElementById("chatBox");
+
+      chat.style.display =
+        chat.style.display === "block" ? "none" : "block";
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("messageInput");
+      const messages = document.getElementById("messages");
+
+      const message = input.value.trim();
+
+      if (!message) return;
+
+      // Show user message
+      messages.innerHTML += `
+        <div class="message user">
+          ${escapeHtml(message)}
+        </div>
+      `;
+
+      input.value = "";
+
+      // Loading message
+      const loading = document.createElement("div");
+      loading.className = "message bot";
+      loading.textContent = "Typing...";
+      messages.appendChild(loading);
+
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: message
+          })
+        });
+
+        const data = await response.json();
+
+        loading.remove();
+
+        messages.innerHTML += `
+          <div class="message bot">
+            ${escapeHtml(data.reply)}
+          </div>
+        `;
+
+      } catch (error) {
+        loading.textContent =
+          "Sorry, something went wrong. Please try again.";
+      }
+
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
     <!-- Vendor JS Files -->
     <script src="assets/vendor/purecounter/purecounter.js"></script>
     <script src="assets/vendor/aos/aos.js"></script>
