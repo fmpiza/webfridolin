@@ -118,6 +118,40 @@
       color: white;
       cursor: pointer;
     }
+
+		  /* BEAUTIFUL SHORT HEADING UNDERLINE */
+.heading-underline {
+    width: 65px;
+    height: 5px;
+    margin: 12px auto 25px;
+    background: linear-gradient(
+        90deg,
+        #007bff,
+        #00c6ff,
+        #00d084
+    );
+    border-radius: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ANIMATED SHINING EFFECT */
+.heading-underline::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    animation: underlineShine 2s infinite;
+}
+
+@keyframes underlineShine {
+    100% {
+        left: 100%;
+    }
+}
   </style>
 
     <!-- =======================================================
@@ -206,6 +240,7 @@
                     </div>
                     <div class="col-lg-8 pt-4 pt-lg-0 content" data-aos="fade-left">
                         <h3>Network and Software Engineer.</h3>
+						  <div class="heading-underline"></div>
                         <p class="fst-italic">
                             Meanwhile, I have high knowledge of computer forensics, biometrics technologies, ethical hacking, cryptographic ciphers issues such as OTP, Interactive Voice Response(IVR) and Geographic Information System also I make sure that through the development
                             of science and technology, society can solve different faced challenges since it has a great contribution by deploying the easiest approaches.</p>
